@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Guide Chatbot</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to external CSS file -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            color: #ff6347;
+        }
+        #chat-container {
+            width: 40%;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        #chat-box {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background: #fff;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        input {
+            width: 75%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        button {
+            padding: 10px 15px;
+            background: #ff6347;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #e5533d;
+        }
+    </style>
+</head>
+<body>
+    <h1>🍽️ Food Guide Chatbot 🍲</h1>
+    <p>Welcome! Ask me anything about food, ingredients, and recipes.</p>
+    
+    <div id="chat-container">
+        <div id="chat-box"></div>
+        <input type="text" id="user-input" placeholder="Type your question...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+    
+    <script>
+        function sendMessage() {
+            let userInput = document.getElementById('user-input').value;
+            let chatBox = document.getElementById('chat-box');
+            if (userInput.trim() !== "") {
+                let userMessage = `<p><strong>You:</strong> ${userInput}</p>`;
+                chatBox.innerHTML += userMessage;
+                document.getElementById('user-input').value = "";
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        }
+    </script>
+</body>
+</html>
