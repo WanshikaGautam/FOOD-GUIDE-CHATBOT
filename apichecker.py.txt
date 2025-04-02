@@ -1,0 +1,16 @@
+import openai
+import os
+from dotenv import load_dotenv
+
+# Load API Key from .env file
+load_dotenv()
+api_key = os.getenv("OPENAI_API_KEY")
+
+# Create OpenAI client
+client = openai.OpenAI(api_key=api_key)
+
+try:
+    response = client.models.list()
+    print("✅ API Key is working! Models available:", [model.id for model in response.data])
+except openai.OpenAIError as e:
+    print("❌ API Key Error:", e)
