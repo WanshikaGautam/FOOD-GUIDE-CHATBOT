@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 # Load API key from .env file
 load_dotenv()
-GEMINI_API_KEY = "AIzaSyCfoApkAkVlpZktX-8ly3G5GRUQYOwIb10"
+GEMINI_API_KEY ="AIzaSyCfoApkAkVlpZktX-8ly3G5GRUQYOwIb10"
 
 # Configure Google Gemini API
 genai.configure(api_key=GEMINI_API_KEY)
@@ -45,70 +45,35 @@ def get_exchange_rate():
         print("Error fetching exchange rate:", e)
         return None
 
-def calculate_old_tax(income):
-    """Calculate tax based on old regime"""
-    tax = 0
-    if income > 1000000:
-        tax += (income - 1000000) * 0.3
-        income = 1000000
-    if income > 500000:
-        tax += (income - 500000) * 0.2
-        income = 500000
-    if income > 250000:
-        tax += (income - 250000) * 0.05
-    return tax
-
-def calculate_new_tax(income):
-    """Calculate tax based on new regime"""
-    tax = 0
-    if income > 1500000:
-        tax += (income - 1500000) * 0.3
-        income = 1500000
-    if income > 1250000:
-        tax += (income - 1250000) * 0.25
-        income = 1250000
-    if income > 1000000:
-        tax += (income - 1000000) * 0.2
-        income = 1000000
-    if income > 750000:
-        tax += (income - 750000) * 0.15
-        income = 750000
-    if income > 500000:
-        tax += (income - 500000) * 0.1
-        income = 500000
-    if income > 250000:
-        tax += (income - 250000) * 0.05
-    return tax
+dish_data = {
+    "pasta": {
+        "description": "Pasta is an Italian dish made from wheat and shaped into various forms.",
+        "ingredients": ["Wheat", "Water", "Salt"],
+        "calories": 310
+    },
+    "biryani": {
+        "description": "Biryani is a flavorful South Asian rice dish made with spices, rice, and meat or vegetables.",
+        "ingredients": ["Basmati Rice", "Spices", "Chicken or Vegetables"],
+        "calories": 450
+    },
+    "sushi": {
+        "description": "Sushi is a Japanese dish consisting of vinegared rice with seafood, vegetables, and sometimes tropical fruits.",
+        "ingredients": ["Rice", "Seaweed", "Fish", "Vinegar"],
+        "calories": 200
+    }
+}
 
 @app.route("/", methods=["GET", "POST"])
 def home():
-    tax = None
-    tax_in_usd = None
+    dish_info = None
+    dish_name = ""
     if request.method == "POST":
-        try:
-            name = request.form["name"]
-            income = float(request.form["income"])
-            expenses = float(request.form["expenses"])
-            tax_regime = request.form["tax_regime"]
+        dish_name = request.form["dish"].lower()
+        dish_info = dish_data.get(dish_name)
+        if not dish_info:
+            return render_template("result.html", dish_name=dish_name, not_found=True)
 
-            taxable_income = income - expenses
-
-            if tax_regime == "old":
-                tax = calculate_old_tax(taxable_income)
-            elif tax_regime == "new":
-                tax = calculate_new_tax(taxable_income)
-            else:
-                return jsonify({"error": "Invalid tax regime selected."})
-
-            exchange_rate = get_exchange_rate()
-            if exchange_rate:
-                tax_in_usd = round(tax * exchange_rate, 2)
-
-            return render_template("result.html", name=name, taxable_income=taxable_income, tax=tax, tax_in_usd=tax_in_usd)
-        except ValueError:
-            return jsonify({"error": "Invalid input. Please enter numeric values for income and expenses."})
-
-    return render_template("index.html")
+    return render_template("index.html", dish_info=dish_info, dish_name=dish_name)
 
 if __name__ == "__main__":
     app.run(debug=True)
